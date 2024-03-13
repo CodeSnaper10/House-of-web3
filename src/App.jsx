@@ -7,6 +7,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState('PLP');
   const [apiData, setApiData] = useState({ results: [] });
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [isLoading, setIsLoading] = useState(true); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,6 +24,7 @@ export default function App() {
         const response = await fetch(url, options);
         const result = await response.json();
         setApiData(result);
+        setIsLoading(false);
         console.log(result);
       } catch (error) {
         console.error(error);
@@ -42,11 +44,19 @@ export default function App() {
 
   return (
     <div>
-      {currentPage === 'PLP' && (
-        <PLP apiData={apiData} onProductClick={handleProductClick} />
-      )}
-      {currentPage === 'PDP' && (
-        <PDP product={selectedProduct} onBack={handleBackToPLP} />
+      {isLoading ? (
+      <div className='loader-container'>
+        <div className='loader'></div>
+      </div>
+      ) : (
+        <>
+          {currentPage === 'PLP' && (
+            <PLP apiData={apiData} onProductClick={handleProductClick} />
+          )}
+          {currentPage === 'PDP' && (
+            <PDP product={selectedProduct} onBack={handleBackToPLP} />
+          )}
+        </>
       )}
     </div>
   );
